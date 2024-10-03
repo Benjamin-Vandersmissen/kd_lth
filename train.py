@@ -164,7 +164,7 @@ def train(model, recipe, train_loader, eval_loader, amp=False, device=torch.devi
             if start.it == end.it:
                 break
 
-        torch.save(model.state_dict(), f'r18_cifar10_dense_train/model_{start.ep}.pth')
+        torch.save(model.state_dict(), f'r18_cifar10_dense_train/model_{start.ep()}.pth')
         scheduler.step()  # Epoch-wise scheduler.
         train_losses.append(epoch_loss)
         logging |= {'Total Loss': epoch_loss}

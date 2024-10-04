@@ -14,12 +14,16 @@ def rewind(full_network: torch.nn.Module, initial_network: dict):
     return full_network
 
 
-def lth(network, recipe, train_loader, eval_loader, pruning_rate, pruning_iterations, amp, use_wandb): 
+def lth(network, recipe, train_loader, eval_loader, pruning_rate, pruning_iterations, amp, use_wandb, model_dir): 
+    if model_dir is not None:
+        torch.save(network.state_dict(), os.path.join(model_dir, 'init.pth'))
     device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
     # Pretraining.
     start = Step(len(train_loader), 0)
     pretrain_end = Step(len(train_loader), recipe.pretrain_its)
     train(network, recipe, train_loader, eval_loader, start=start, end=pretrain_end, device=device, amp=amp, use_wandb=use_wandb)
+    if model_dir is not None:
+        torch.save(network.state_dict(), os.path.join(model_dir, 'pretrain.pth'))
     # torch.save(network.state_dict(), os.path.join(args.output_dir, 'pretrained.pth'))  # TODO: choose correct location, depending on whether we want to save.  
     rewind_weights = {key: copy.deepcopy(val.cpu()) for key, val in network.state_dict().items()}
     
@@ -40,3 +44,5 @@ def lth(network, recipe, train_loader, eval_loader, pruning_rate, pruning_iterat
         # torch.save(trained_network.state_dict(), os.path.join(args.output_dir, f'trained_ticket_{it}.pth'))
         # torch.save(trained_network.mask, os.path.join(args.output_dir, f'mask_{it}.pth'))
         duration = time.time() - stime
+        if model_dir is not None:
+            torch.save(network.state_dict(), os.path.join(model_dir, f'trained_ticket_{it}.pth'))

@@ -32,7 +32,7 @@ if not args.nosync:
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 if args.subcommand == 'find':
-    lth(PrunableModule(model_fn()), recipe, train_loader, eval_loader, args.rate, args.iterations, args.amp, not args.nosync)
+    lth(PrunableModule(model_fn()), recipe, train_loader, eval_loader, args.rate, args.iterations, args.amp, not args.nosync, model_dir=None if args.nosync else model_dir)
 
 elif args.subcommand == 'train':
     train(PrunableModule(model_fn()), recipe, train_loader, eval_loader, args.amp, use_wandb = not args.nosync)

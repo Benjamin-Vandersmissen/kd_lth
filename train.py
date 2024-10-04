@@ -139,6 +139,7 @@ def train(model, recipe, train_loader, eval_loader, amp=False, device=torch.devi
         scaler = GradScaler()
 
     pbar = tqdm.tqdm(total=end.it, initial=start.it)
+    # torch.save(model.state_dict(), f'r18_cifar10_dense_train/model_{start.ep()}.pth')
     while start.it != end.it:
         logging = {}
         epoch_loss = 0
@@ -164,7 +165,7 @@ def train(model, recipe, train_loader, eval_loader, amp=False, device=torch.devi
             if start.it == end.it:
                 break
 
-        torch.save(model.state_dict(), f'r18_cifar10_dense_train/model_{start.ep()}.pth')
+        # torch.save(model.state_dict(), f'r18_cifar10_dense_train/model_{start.ep()}.pth')
         scheduler.step()  # Epoch-wise scheduler.
         train_losses.append(epoch_loss)
         logging |= {'Total Loss': epoch_loss}

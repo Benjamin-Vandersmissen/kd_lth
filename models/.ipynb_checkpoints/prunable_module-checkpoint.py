@@ -48,3 +48,6 @@ class PrunableModule(torch.nn.Module):
         for layer in self.prunable_layers:
             dis += torch.logical_xor(self.mask[layer], other.mask[layer]).sum()
         return dis
+
+    def sparsity(self):
+        return sum([m.sum().item() for m in self.mask.values()]) / sum([m.numel() for m in self.mask.values()])

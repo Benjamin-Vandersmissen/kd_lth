@@ -15,7 +15,8 @@ class TrainingRecipe(object):
                  'decay': ('The weight decay applied during training', float),
                  'momentum': ('The momentum of the SGD optimizer', float),
                  'warmup': ('Linear learning rate warmup for the SGD optimizer', float),
-                 'lr_schedule': ('The LR schedule for the SGD optimizer. Formatted as following : *typ*,*comma-separated args*', str)
+                 'lr_schedule': ('The LR schedule for the SGD optimizer. Formatted as following : *typ*,*comma-separated args*', str),
+                 'pretrain_its': ('The amount of pretraining required for LTH', int)
                 }
     
     def __init__(self, train, lr, bs, lr_schedule, weight_decay, momentum, warmup, pretrain_its=0):

@@ -47,3 +47,4 @@ def lth(network, recipe, train_loader, eval_loader, pruning_rate, pruning_iterat
         duration = time.time() - stime
         if model_dir is not None:
             torch.save(network.state_dict(), os.path.join(model_dir, f'trained_ticket_{it}.pth'))
+            print(network.sparsity())

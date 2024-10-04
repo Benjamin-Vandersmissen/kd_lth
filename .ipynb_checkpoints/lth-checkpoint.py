@@ -33,8 +33,8 @@ def lth(network, recipe, train_loader, eval_loader, pruning_rate, pruning_iterat
         ##
         if it > 0:
             network.prune(pruning_rate, 'full')
-            print(list(rewind_weights.keys()))
             network = rewind(network, rewind_weights).to(device)
+            print(network.sparsity())
             start.it = recipe.pretrain_its # Reset step to pretraining.
         
         ##

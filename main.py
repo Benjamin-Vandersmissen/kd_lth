@@ -25,7 +25,7 @@ if not args.nosync:
 
     wandkey = open('wandAPI').read().strip()
     wandb.login(key=wandkey)
-    wandb.init(project='LucasMethod', config=vars(args) | {'GIT_HASH': updater.current_commit()})
+    wandb.init(project='lth_kd', config=vars(args) | {'GIT_HASH': updater.current_commit()})
     model_dir = f'./models/{wandb.run.name}'
     os.makedirs(model_dir)
 

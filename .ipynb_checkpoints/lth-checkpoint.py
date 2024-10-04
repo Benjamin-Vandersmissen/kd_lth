@@ -10,7 +10,7 @@ import math
 
 def rewind(full_network: torch.nn.Module, initial_network: dict):
     with torch.no_grad():
-        full_network.load_state_dict(initial_network)
+        full_network.load_state_dict(initial_network, strict=False)  # Only reinitialize the weights, not the mask
     return full_network
 
 
@@ -25,7 +25,7 @@ def lth(network, recipe, train_loader, eval_loader, pruning_rate, pruning_iterat
     if model_dir is not None:
         torch.save(network.state_dict(), os.path.join(model_dir, 'pretrain.pth'))
     # torch.save(network.state_dict(), os.path.join(args.output_dir, 'pretrained.pth'))  # TODO: choose correct location, depending on whether we want to save.  
-    rewind_weights = {key: copy.deepcopy(val.cpu()) for key, val in network.state_dict().items()}
+    rewind_weights = {key: copy.deepcopy(val.cpu()) for key, val in network.state_dict().items() if 'mask' not in key}  # Only keep the weights, not the mask
     
     for it in range(pruning_iterations+1):
         ##

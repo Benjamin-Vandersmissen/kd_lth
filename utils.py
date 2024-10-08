@@ -1,4 +1,7 @@
+from collections import defaultdict
 import torch
+import random
+import tqdm
 
 def evaluate(network, eval_loader, amp):
     amp &= torch.cuda.is_available()  # Auto disable AMP if CUDA is not available
@@ -28,3 +31,32 @@ class Step:
 
     def __repr__(self):
         return f"Ep {self.ep()}, it {self.it % self.its_per_ep} ({self.it} total Iterations)"
+
+
+class Coreset(torch.utils.data.Dataset):
+    def __init__(self, dataset, idxs):
+        self.idxs = idxs
+        self.dataset = dataset
+
+    def __len__(self):
+        return len(self.idxs)
+
+    def __getitem__(self, idx):
+        return self.dataset[self.idxs[idx]]
+
+def coreset(dataset, ipc, mapping=None):
+    if mapping is not None:
+        assert sum([len(val) for val in mapping.values()]) == len(dataset) # Basic assertion, we could do more
+    else:
+        mapping = defaultdict(list)
+        for i, (_, lbl) in enumerate(tqdm.tqdm(dataset)):
+            mapping[lbl].append(i)
+
+        
+        for val in mapping.values():
+            random.shuffle(val)
+
+    test = [(i, v) for i, val in mapping.items() for v in val[:ipc]]
+    idxs = [v for val in mapping.values() for v in val[:ipc]]
+    return Coreset(dataset, idxs), mapping
+    

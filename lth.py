@@ -34,7 +34,7 @@ def lth(network, recipe, train_loader, eval_loader, pruning_rate, pruning_iterat
         if it > 0:
             network.prune(pruning_rate, 'full')
             network = rewind(network, rewind_weights).to(device)
-            print(network.sparsity())
+            torch.save(network.mask, os.path.join(model_dir, f'mask_{it}.pth'))
             start.it = recipe.pretrain_its # Reset step to pretraining.
         
         ##

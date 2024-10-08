@@ -26,7 +26,7 @@ if not args.nosync:
     wandkey = open('wandAPI').read().strip()
     wandb.login(key=wandkey)
     wandb.init(project='lth_kd', config=vars(args) | {'GIT_HASH': updater.current_commit()})
-    model_dir = f'./models/{wandb.run.name}'
+    model_dir = f'./artifacts/{wandb.run.name}'
     os.makedirs(model_dir)
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
